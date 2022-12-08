@@ -2,6 +2,7 @@ package com.example.movieservice.user;
 
 import com.example.movieservice.movie.Movie;
 import com.example.movieservice.series.Series;
+import com.example.movieservice.wallet.Wallet;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -26,7 +27,7 @@ public class User {
     @Size(min = 3)
     private String password;
 
-    private String roles;
+    private String role;
 
     @ManyToMany(mappedBy = "usersThatWatchedMovies")
     @JsonIgnore
@@ -40,6 +41,12 @@ public class User {
     @Email(regexp = "^[_A-Za-z0-9+-]+(?:[.'’][_A-Za-z0-9-]+)*@[_A-Za-z0-9-]+(?:\\.[_A-Za-z0-9-]+)*\\.[A-Za-z]{2,}$")
     private String email;
 
+    private boolean isSubscribed;
+
+    @OneToOne(cascade = {CascadeType.ALL})
+    @JoinColumn(name = "fk_wallet_id")
+    private Wallet wallet;
+
     // CONSTRUCTOR
     public User() {
     }
@@ -48,6 +55,7 @@ public class User {
         this.username = username;
         this.password = password;
         this.email = email;
+        this.isSubscribed = false;
     }
 
     // GETTERS
@@ -75,9 +83,18 @@ public class User {
         return watchedSeries;
     }
 
-    public String getRoles() {
-        return roles;
+    public String getRole() {
+        return role;
     }
+
+    public boolean isSubscribed() {
+        return isSubscribed;
+    }
+
+    public Wallet getWallet() {
+        return wallet;
+    }
+
 
     // SETTERS
     public void setUsername(String username) {
@@ -100,9 +117,18 @@ public class User {
         this.watchedSeries = watchedSeries;
     }
 
-    public void setRoles(String roles) {
-        this.roles = roles;
+    public void setRole(String role) {
+        this.role = role;
     }
+
+    public void setSubscribed(boolean subscribed) {
+        isSubscribed = subscribed;
+    }
+
+    public void setWallet(Wallet wallet) {
+        this.wallet = wallet;
+    }
+
 
     @Override
     public boolean equals(Object o) {

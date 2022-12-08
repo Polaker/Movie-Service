@@ -4,7 +4,9 @@ import com.example.movieservice.user.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -23,7 +25,15 @@ public class Movie {
     @NotBlank
     private String releaseYear;
 
+    private double rating;
+
     private int watchCount;
+
+    private boolean isSubscriptionOnly;
+
+    @JsonIgnore
+    @ElementCollection
+    private List<Integer> usersRatingsList;
 
     @JsonIgnore
     @ManyToMany(cascade = {CascadeType.ALL})
@@ -32,17 +42,23 @@ public class Movie {
             joinColumns = @JoinColumn(name = "movie_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )
-    private Set<User> usersThatWatchedMovies = new HashSet<>();
+    private Set<User> usersThatWatchedMovies;
 
     // CONSTRUCTOR
     public Movie() {
     }
 
-    public Movie(String nameOfFilm, String description, String releaseYear) {
+    public Movie(String nameOfFilm,
+                 String description,
+                 String releaseYear) {
         this.nameOfFilm = nameOfFilm;
         this.description = description;
         this.releaseYear = releaseYear;
+        this.rating = 0.0;
         this.watchCount = 0;
+        this.isSubscriptionOnly = false;
+        this.usersThatWatchedMovies = new HashSet<>();
+        this.usersRatingsList = new ArrayList<>();
     }
 
     // GETTERS
@@ -70,6 +86,18 @@ public class Movie {
         return watchCount;
     }
 
+    public boolean isSubscriptionOnly() {
+        return isSubscriptionOnly;
+    }
+
+    public double getRating() {
+        return rating;
+    }
+
+    public List<Integer> getUsersRatingsList() {
+        return usersRatingsList;
+    }
+
     // SETTERS
     public void setUsersThatWatchedMovies(Set<User> usersThatWatchedMovies) {
         this.usersThatWatchedMovies = usersThatWatchedMovies;
@@ -89,5 +117,17 @@ public class Movie {
 
     public void setWatchCount(int watchCount) {
         this.watchCount = watchCount;
+    }
+
+    public void setSubscriptionOnly(boolean subscriptionOnly) {
+        isSubscriptionOnly = subscriptionOnly;
+    }
+
+    public void setRating(double rating) {
+        this.rating = rating;
+    }
+
+    public void setUsersRatingsList(List<Integer> usersRatingsList) {
+        this.usersRatingsList = usersRatingsList;
     }
 }

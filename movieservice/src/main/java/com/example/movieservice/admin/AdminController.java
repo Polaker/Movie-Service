@@ -40,4 +40,18 @@ public class AdminController {
     public ResponseEntity addNewSeries(@Valid @RequestBody Series series) throws SeriesAlreadyExistsException {
         return ResponseEntity.ok(adminService.addSeries(series));
     }
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PostMapping("/add/subscription/movie")
+    public ResponseEntity addNewSubscriptionMovie(@Valid @RequestBody Movie movie) throws MovieAlreadyExistsException {
+        return ResponseEntity.ok(adminService.addSubscriptionMovie(movie));
+    }
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PostMapping("/add/subscription/series")
+    public ResponseEntity addNewSubscriptionSeries(@Valid @RequestBody Series series) throws SeriesAlreadyExistsException {
+        return ResponseEntity.ok(adminService.addSubscriptionSeries(series));
+    }
+
+
 }

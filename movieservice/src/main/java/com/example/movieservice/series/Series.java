@@ -4,9 +4,10 @@ import com.example.movieservice.user.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
-
 
 @Entity
 public class Series {
@@ -24,7 +25,15 @@ public class Series {
     @NotBlank
     private String releaseYear;
 
+    private double rating;
+
     private int watchCount;
+
+    private boolean isSubscriptionOnly;
+
+    @JsonIgnore
+    @ElementCollection
+    private List<Integer> usersRatingsList;
 
     @JsonIgnore
     @ManyToMany(cascade = {CascadeType.ALL})
@@ -33,7 +42,7 @@ public class Series {
             joinColumns = @JoinColumn(name = "series_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )
-    private Set<User> usersThatWatchedSeries = new HashSet<>();
+    private Set<User> usersThatWatchedSeries;
 
 
     // CONSTRUCTOR
@@ -46,8 +55,13 @@ public class Series {
         this.nameOfSeries = nameOfSeries;
         this.description = description;
         this.releaseYear = releaseYear;
+        this.rating = 0.0;
         this.watchCount = 0;
+        this.isSubscriptionOnly = false;
+        this.usersThatWatchedSeries = new HashSet<>();
+        this.usersRatingsList = new ArrayList<>();
     }
+
 
     // GETTERS
     public String getNameOfSeries() {
@@ -70,6 +84,17 @@ public class Series {
         return usersThatWatchedSeries;
     }
 
+    public boolean isSubscriptionOnly() {
+        return isSubscriptionOnly;
+    }
+
+    public double getRating() {
+        return rating;
+    }
+
+    public List<Integer> getUsersRatingsList() {
+        return usersRatingsList;
+    }
 
     // SETTERS
 
@@ -91,5 +116,17 @@ public class Series {
 
     public void setUsersThatWatchedSeries(Set<User> usersThatWatchedSeries) {
         this.usersThatWatchedSeries = usersThatWatchedSeries;
+    }
+
+    public void setSubscriptionOnly(boolean subscriptionOnly) {
+        isSubscriptionOnly = subscriptionOnly;
+    }
+
+    public void setRating(double rating) {
+        this.rating = rating;
+    }
+
+    public void setUsersRatingsList(List<Integer> usersRatingsList) {
+        this.usersRatingsList = usersRatingsList;
     }
 }
